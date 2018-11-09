@@ -1,5 +1,8 @@
 package com.hoopladigital.test;
 
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 import com.google.inject.Guice;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -10,6 +13,7 @@ import org.apache.derby.drda.NetworkServerControl;
 import org.apache.ibatis.session.SqlSessionManager;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,10 +39,11 @@ public abstract class AbstractMapperTest extends AbstractTest {
 		injector.injectMembers(this);
 		derbyHelper.init(true);
 		sqlSessionManager.startManagedSession();
+		DriverManager.registerDriver(new org.apache.derby.jdbc.EmbeddedDriver());
 	}
 
 	@After
-	public void afterAbstractMapperTest() throws Exception {
+	public void afterAbstractMapperTest() {
 		sqlSessionManager.rollback(true);
 		sqlSessionManager.close();
 		try {
